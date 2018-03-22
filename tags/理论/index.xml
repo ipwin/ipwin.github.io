@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>理论 on This Is Me</title>
+    <link>http://ijf.me/tags/%E7%90%86%E8%AE%BA/</link>
+    <description>Recent content in 理论 on This Is Me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 22 Mar 2018 19:28:46 +0800</lastBuildDate>
+    
+	<atom:link href="http://ijf.me/tags/%E7%90%86%E8%AE%BA/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>技术人员行动指南</title>
+      <link>http://ijf.me/post/code-monkey-action-guide/</link>
+      <pubDate>Thu, 22 Mar 2018 19:28:46 +0800</pubDate>
+      
+      <guid>http://ijf.me/post/code-monkey-action-guide/</guid>
+      <description>序 工作几年的你，与应届生比，除了经验多一点，还有什么不同？ ——仅仅积累技术经验是不够的，要看清问题本质，掌握更高阶的理论，提升认知水平，这才</description>
+    </item>
+    
+  </channel>
+</rss>

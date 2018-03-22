@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on This Is Me</title>
+    <link>http://ijf.me/tags/</link>
+    <description>Recent content in Tags on This Is Me</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    
+	<atom:link href="http://ijf.me/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>架构</title>
+      <link>http://ijf.me/tags/%E6%9E%B6%E6%9E%84/</link>
+      <pubDate>Thu, 22 Mar 2018 19:28:46 +0800</pubDate>
+      
+      <guid>http://ijf.me/tags/%E6%9E%B6%E6%9E%84/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>理论</title>
+      <link>http://ijf.me/tags/%E7%90%86%E8%AE%BA/</link>
+      <pubDate>Thu, 22 Mar 2018 19:28:46 +0800</pubDate>
+      
+      <guid>http://ijf.me/tags/%E7%90%86%E8%AE%BA/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

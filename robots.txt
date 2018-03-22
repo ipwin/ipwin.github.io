@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: http://ijf.me/sitemap.xml
