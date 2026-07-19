@@ -1,1750 +1,2336 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>IPxAI — AI Agent 底座 · 让品牌、IP、流量进入次世代</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;700&display=swap" rel="stylesheet">
-<style>
-/* ===== Reset & Variables ===== */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>IPxAI — AI Agent 底座 · 让品牌、IP、流量进入次世代</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ===== Reset & Variables ===== */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-:root {
-  --bg:           #070708;
-  --bg-card:      #0A0A0A;
-  --border:       #1A1A1F;
-  --border-2:     #262629;
-  --accent:       #BEF264;
-  --white:        #F5F5F7;
-  --gray:         #A1A1AA;
-  --muted:        #71717A;
-  --dim:          #52525B;
-  --accent-02:    rgba(191, 242, 99, 0.2);
-  --accent-025:   rgba(191, 242, 99, 0.25);
-  --accent-03:    rgba(191, 242, 99, 0.3);
-  --accent-04:    rgba(191, 242, 99, 0.4);
-  --accent-05:    rgba(191, 242, 99, 0.5);
+    :root {
+      --bg: #070708;
+      --bg-card: #0A0A0A;
+      --border: #1A1A1F;
+      --border-2: #262629;
+      --accent: #BEF264;
+      --white: #F5F5F7;
+      --gray: #A1A1AA;
+      --muted: #71717A;
+      --dim: #52525B;
+      --accent-02: rgba(191, 242, 99, 0.2);
+      --accent-025: rgba(191, 242, 99, 0.25);
+      --accent-03: rgba(191, 242, 99, 0.3);
+      --accent-04: rgba(191, 242, 99, 0.4);
+      --accent-05: rgba(191, 242, 99, 0.5);
 
-  --font-sans: 'Geist', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'Geist Mono', 'PingFang SC', 'SF Mono', 'Fira Code', monospace;
+      --font-sans: 'Geist', 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'Geist Mono', 'PingFang SC', 'SF Mono', 'Fira Code', monospace;
 
-  /* Responsive spacing tokens */
-  --pad-x: 64px;
-  --section-pad-y: 80px;
-}
+      /* Responsive spacing tokens */
+      --pad-x: 64px;
+      --section-pad-y: 80px;
+    }
 
-html { background: var(--bg); }
-body {
-  background: var(--bg);
-  font-family: var(--font-sans);
-  color: var(--white);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  /* Prevent text size adjustment on orientation change */
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
+    html {
+      background: var(--bg);
+    }
 
-/* ===== Canvas Scaling Wrapper (desktop only) ===== */
-.canvas-outer {
-  width: 100%;
-  background: var(--bg);
-  overflow: hidden;
-}
-.canvas-wrapper {
-  width: 1440px;
-  margin: 0 auto;
-  position: relative;
-  transform-origin: top center;
-}
+    body {
+      background: var(--bg);
+      font-family: var(--font-sans);
+      color: var(--white);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      /* Prevent text size adjustment on orientation change */
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
 
-/* ===== Shared Components ===== */
-.section-label {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 13px;
-  color: var(--accent);
-  letter-spacing: 0.02em;
-}
-.section-headline {
-  font-weight: 700;
-  font-size: 40px;
-  line-height: 1.15;
-  color: var(--white);
-}
-.section-desc {
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--gray);
-}
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-.card-accent { border-color: var(--accent-05); }
-.btn-primary {
-  background: var(--accent);
-  color: var(--bg);
-  border-radius: 8px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  border: none;
-  font-family: var(--font-sans);
-  -webkit-tap-highlight-color: transparent;
-}
-.btn-secondary {
-  background: var(--bg-card);
-  color: var(--white);
-  border: 1px solid var(--border-2);
-  border-radius: 8px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  -webkit-tap-highlight-color: transparent;
-}
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: 99px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray);
-  width: fit-content;
-}
-.badge-dot {
-  width: 6px; height: 6px;
-  border-radius: 99px;
-  background: var(--accent);
-  flex-shrink: 0;
-}
+    /* ===== Canvas Scaling Wrapper (desktop only) ===== */
+    .canvas-outer {
+      width: 100%;
+      background: var(--bg);
+      overflow: hidden;
+    }
 
-/* ===== Header ===== */
-.header {
-  height: 78px;
-  padding: 0 var(--pad-x);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--bg);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  font-weight: 700;
-}
-.logo-ip { font-size: 22px; color: var(--white); }
-.logo-x  { font-size: 24px; color: var(--accent); }
-.logo-ai { font-size: 22px; color: var(--white); }
-.nav {
-  display: flex;
-  gap: 40px;
-}
-.nav a {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray);
-  text-decoration: none;
-}
-.nav a:hover { color: var(--white); }
-.header-cta {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-.header-cta .login {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--white);
-  text-decoration: none;
-}
-.header-cta .btn-primary {
-  padding: 10px 20px;
-  font-size: 14px;
-}
+    .canvas-wrapper {
+      width: 1440px;
+      margin: 0 auto;
+      position: relative;
+      transform-origin: top center;
+    }
 
-/* Mobile menu button — hidden on desktop */
-.menu-toggle {
-  display: none;
-  width: 44px;
-  height: 44px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 5px;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
-.menu-toggle span {
-  display: block;
-  width: 20px;
-  height: 2px;
-  background: var(--white);
-  border-radius: 1px;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-.menu-toggle.active span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-.menu-toggle.active span:nth-child(2) {
-  opacity: 0;
-}
-.menu-toggle.active span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-}
+    /* ===== Shared Components ===== */
+    .section-label {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
 
-/* ===== Hero Section ===== */
-.hero {
-  padding: 64px var(--pad-x) 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  background: var(--bg);
-}
-.hero-row {
-  display: flex;
-  gap: 56px;
-  align-items: center;
-}
-.hero-left {
-  width: 720px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-.hero-headline-1 {
-  font-size: 64px;
-  font-weight: 700;
-  line-height: 1.05;
-  color: var(--white);
-}
-.hero-headline-2 {
-  font-size: 64px;
-  font-weight: 700;
-  line-height: 1.05;
-  color: var(--accent);
-}
-.hero-sub {
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--gray);
-}
-.hero-cta-row {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.hero-cta-row .btn-primary {
-  padding: 14px 26px;
-  font-size: 15px;
-}
-.hero-cta-row .btn-secondary {
-  padding: 14px 26px;
-  font-size: 15px;
-}
-.hero-trust {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--muted);
-}
-.hero-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+    .section-headline {
+      font-weight: 700;
+      font-size: 40px;
+      line-height: 1.15;
+      color: var(--white);
+    }
 
-/* ===== Agent Workbench Card ===== */
-.workbench-card {
-  width: 520px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  border-radius: 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-}
-.wb-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.wb-title { font-size: 14px; font-weight: 600; color: var(--white); }
-.wb-status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray);
-}
-.wb-divider {
-  height: 1px;
-  background: var(--border);
-}
-.wb-stat-row {
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
-}
-.wb-stat {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.wb-stat-num {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 26px;
-  color: var(--white);
-}
-.wb-stat-label {
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--muted);
-}
-.wb-activity-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-}
-.wb-activity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.wb-activity-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.wb-activity-dot {
-  width: 5px; height: 5px;
-  border-radius: 99px;
-  background: var(--accent);
-  flex-shrink: 0;
-}
-.wb-activity-dot.dim { background: var(--muted); }
-.wb-activity-text {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--gray);
-}
-.wb-activity-text.dim { color: var(--muted); }
-.wb-command {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-}
-.wb-command-text {
-  font-size: 13px;
-  color: var(--dim);
-  flex: 1;
-}
-.wb-command-send {
-  width: 28px; height: 28px;
-  border-radius: 99px;
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--bg);
-  flex-shrink: 0;
-}
+    .section-desc {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--gray);
+    }
 
-/* ===== Problem/Solution Section ===== */
-.problem-solution {
-  padding: var(--section-pad-y) var(--pad-x);
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-.ps-header {
-  width: 820px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.transform-row {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-}
-.transform-card {
-  flex: 1;
-  padding: 24px 28px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.transform-card.after { border-color: var(--accent-03); }
-.transform-label {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 11px;
-  color: var(--muted);
-}
-.transform-label.accent { color: var(--accent); }
-.transform-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--gray);
-}
-.transform-title.white { color: var(--white); }
-.transform-points {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.8;
-  color: var(--muted);
-  white-space: pre-line;
-}
-.transform-points.white { color: var(--white); }
-.transform-arrow {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--accent);
-  flex-shrink: 0;
-}
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
 
-/* ===== Core Features Section ===== */
-.features {
-  padding: var(--section-pad-y) var(--pad-x);
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-.features-header {
-  width: 820px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.bento-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.bento-row {
-  display: flex;
-  gap: 16px;
-}
-.bento-tile {
-  padding: 24px 28px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  height: 200px;
-}
-.bento-tile.grow-7 { flex: 7; }
-.bento-tile.grow-5 { flex: 5; }
-.tile-num {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 13px;
-  color: var(--accent);
-}
-.tile-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--white);
-}
-.tile-desc {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--gray);
-}
-.bento-tile-full {
-  padding: 24px 28px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--accent-025);
-  display: flex;
-  align-items: center;
-  gap: 40px;
-  height: 128px;
-}
-.bento-tile-full .tile-left {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  width: 300px;
-  flex-shrink: 0;
-}
-.bento-tile-full .tile-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  justify-content: center;
-}
-.bento-tile-full .tile-desc-large {
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--gray);
-}
-.tile-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 99px;
-  background: var(--bg);
-  border: 1px solid var(--accent-04);
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 11px;
-  color: var(--accent);
-  width: fit-content;
-}
-.tile-badge .badge-dot { width: 5px; height: 5px; }
+    .card-accent {
+      border-color: var(--accent-05);
+    }
 
-/* ===== Audience Section ===== */
-.audience {
-  padding: var(--section-pad-y) var(--pad-x);
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-.audience-header {
-  width: 820px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.audience-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.audience-row {
-  display: flex;
-  gap: 48px;
-  align-items: flex-start;
-}
-.audience-left {
-  width: 420px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  flex-shrink: 0;
-}
-.audience-label {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--accent);
-}
-.audience-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--white);
-}
-.audience-desc {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--gray);
-}
-.audience-features {
-  flex: 1;
-  padding: 24px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-}
-.audience-features.accent { border-color: var(--accent-025); }
-.audience-feats-text {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.9;
-  color: var(--white);
-  white-space: pre-line;
-}
-.audience-divider {
-  height: 1px;
-  background: var(--border);
-}
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font-sans);
+      -webkit-tap-highlight-color: transparent;
+    }
 
-/* ===== Social Proof Section ===== */
-.social-proof {
-  padding: var(--section-pad-y) var(--pad-x);
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-.stats-row {
-  display: flex;
-  gap: 24px;
-  justify-content: space-between;
-}
-.stat-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.stat-num-large {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 52px;
-  color: var(--white);
-  line-height: 1;
-}
-.stat-num-large.accent { color: var(--accent); }
-.stat-label {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--muted);
-}
-.sp-divider {
-  height: 1px;
-  background: var(--border);
-}
-.testimonial-row {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-}
-.quote-accent {
-  width: 2px;
-  height: 72px;
-  border-radius: 1px;
-  background: var(--accent);
-  flex-shrink: 0;
-  margin-top: 4px;
-}
-.quote-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.quote-text {
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--white);
-}
-.quote-author {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-}
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--white);
+      border: 1px solid var(--border-2);
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      -webkit-tap-highlight-color: transparent;
+    }
 
-/* ===== Pricing Section ===== */
-.pricing {
-  padding: var(--section-pad-y) var(--pad-x);
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-.pricing-header {
-  width: 820px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.pricing-row {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-.price-card {
-  flex: 1;
-  padding: 24px 32px;
-  border-radius: 12px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.price-card.recommended { border-color: var(--accent-05); }
-.price-badge-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.price-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 5px 10px;
-  border-radius: 99px;
-  background: var(--accent);
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 10px;
-  color: var(--bg);
-}
-.price-label {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 11px;
-  color: var(--muted);
-}
-.price-label.accent { color: var(--accent); }
-.price-name {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--white);
-}
-.price-row {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-}
-.price-value {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 40px;
-  color: var(--white);
-  line-height: 1;
-}
-.price-value.accent { color: var(--accent); }
-.price-unit {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--muted);
-}
-.price-desc {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--gray);
-}
-.price-divider {
-  height: 1px;
-  background: var(--border);
-}
-.price-feats {
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.9;
-  color: var(--white);
-  white-space: pre-line;
-}
-.price-cta {
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.price-cta.outline {
-  border: 1px solid var(--border-2);
-  color: var(--white);
-}
-.price-cta.solid {
-  background: var(--accent);
-  color: var(--bg);
-}
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 99px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray);
+      width: fit-content;
+    }
 
-/* ===== Final CTA Section ===== */
-.final-cta {
-  padding: var(--section-pad-y) var(--pad-x);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-.final-cta-card {
-  width: 960px;
-  padding: 64px;
-  border-radius: 16px;
-  background: var(--bg-card);
-  border: 1px solid var(--accent-02);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 28px;
-  text-align: center;
-}
-.final-cta-label {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 13px;
-  color: var(--accent);
-}
-.final-cta-headline {
-  font-size: 48px;
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--white);
-  white-space: pre-line;
-}
-.final-cta-sub {
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--gray);
-}
-.final-cta-btn-row {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.final-cta-btn {
-  padding: 16px 32px;
-  border-radius: 8px;
-  background: var(--accent);
-  color: var(--bg);
-  font-size: 16px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  border: none;
-  font-family: var(--font-sans);
-  -webkit-tap-highlight-color: transparent;
-}
-.final-cta-trust {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--muted);
-}
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 99px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
 
-/* ===== Footer ===== */
-.footer {
-  padding: 64px var(--pad-x) 32px;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-}
-.footer-top {
-  display: flex;
-  gap: 48px;
-  justify-content: space-between;
-}
-.footer-brand {
-  width: 340px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.footer-logo-wrap {
-  display: flex;
-  align-items: center;
-  font-weight: 700;
-}
-.footer-logo-ip { font-size: 24px; color: var(--white); }
-.footer-logo-x  { font-size: 26px; color: var(--accent); }
-.footer-logo-ai { font-size: 24px; color: var(--white); }
-.footer-tagline {
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--white);
-}
-.footer-desc {
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--muted);
-}
-.footer-links-row {
-  display: flex;
-  gap: 56px;
-}
-.footer-col {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.footer-col-title {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--dim);
-}
-.footer-col a {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--gray);
-  text-decoration: none;
-}
-.footer-col a:hover { color: var(--white); }
-.footer-divider {
-  height: 1px;
-  background: var(--border);
-  margin: 0;
-}
-.footer-bottom {
-  display: flex;
-  gap: 24px;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 0;
-}
-.footer-copyright {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--dim);
-}
-.footer-legal {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-}
-.footer-legal a {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--dim);
-  text-decoration: none;
-}
+    /* ===== Header ===== */
+    .header {
+      height: 78px;
+      padding: 0 var(--pad-x);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-/* ============================================
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      font-weight: 700;
+    }
+
+    .logo-ip {
+      font-size: 22px;
+      color: var(--white);
+    }
+
+    .logo-x {
+      font-size: 24px;
+      color: var(--accent);
+    }
+
+    .logo-ai {
+      font-size: 22px;
+      color: var(--white);
+    }
+
+    .nav {
+      display: flex;
+      gap: 40px;
+    }
+
+    .nav a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray);
+      text-decoration: none;
+    }
+
+    .nav a:hover {
+      color: var(--white);
+    }
+
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-cta .login {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .header-cta .btn-primary {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    /* Mobile menu button — hidden on desktop */
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 1px;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Mobile nav panel — hidden by default on desktop, shown ≤860px via .open class */
+    .mobile-nav {
+      display: none;
+    }
+
+    /* ===== Hero Section ===== */
+    .hero {
+      padding: 64px var(--pad-x) 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      background: var(--bg);
+    }
+
+    .hero-row {
+      display: flex;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .hero-left {
+      width: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .hero-headline-1 {
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--white);
+    }
+
+    .hero-headline-2 {
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--gray);
+    }
+
+    .hero-cta-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-cta-row .btn-primary {
+      padding: 14px 26px;
+      font-size: 15px;
+    }
+
+    .hero-cta-row .btn-secondary {
+      padding: 14px 26px;
+      font-size: 15px;
+    }
+
+    .hero-trust {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .hero-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ===== Agent Workbench Card ===== */
+    .workbench-card {
+      width: 520px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      border-radius: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+
+    .wb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .wb-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .wb-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray);
+    }
+
+    .wb-divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    .wb-stat-row {
+      display: flex;
+      gap: 16px;
+      justify-content: space-between;
+    }
+
+    .wb-stat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .wb-stat-num {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--white);
+    }
+
+    .wb-stat-label {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .wb-activity-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .wb-activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .wb-activity-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .wb-activity-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 99px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .wb-activity-dot.dim {
+      background: var(--muted);
+    }
+
+    .wb-activity-text {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .wb-activity-text.dim {
+      color: var(--muted);
+    }
+
+    .wb-command {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+    }
+
+    .wb-command-text {
+      font-size: 13px;
+      color: var(--dim);
+      flex: 1;
+    }
+
+    .wb-command-send {
+      width: 28px;
+      height: 28px;
+      border-radius: 99px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--bg);
+      flex-shrink: 0;
+    }
+
+    /* ===== Problem/Solution Section ===== */
+    .problem-solution {
+      padding: var(--section-pad-y) var(--pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .ps-header {
+      width: 820px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .transform-row {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .transform-card {
+      flex: 1;
+      padding: 24px 28px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .transform-card.after {
+      border-color: var(--accent-03);
+    }
+
+    .transform-label {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .transform-label.accent {
+      color: var(--accent);
+    }
+
+    .transform-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gray);
+    }
+
+    .transform-title.white {
+      color: var(--white);
+    }
+
+    .transform-points {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.8;
+      color: var(--muted);
+      white-space: pre-line;
+    }
+
+    .transform-points.white {
+      color: var(--white);
+    }
+
+    .transform-arrow {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ===== Core Features Section ===== */
+    .features {
+      padding: var(--section-pad-y) var(--pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .features-header {
+      width: 820px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .bento-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .bento-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .bento-tile {
+      padding: 24px 28px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 200px;
+    }
+
+    .bento-tile.grow-7 {
+      flex: 7;
+    }
+
+    .bento-tile.grow-5 {
+      flex: 5;
+    }
+
+    .tile-num {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    .tile-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .tile-desc {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--gray);
+    }
+
+    .bento-tile-full {
+      padding: 24px 28px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-025);
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      height: 128px;
+    }
+
+    .bento-tile-full .tile-left {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 300px;
+      flex-shrink: 0;
+    }
+
+    .bento-tile-full .tile-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .bento-tile-full .tile-desc-large {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--gray);
+    }
+
+    .tile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      background: var(--bg);
+      border: 1px solid var(--accent-04);
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 11px;
+      color: var(--accent);
+      width: fit-content;
+    }
+
+    .tile-badge .badge-dot {
+      width: 5px;
+      height: 5px;
+    }
+
+    /* ===== Audience Section ===== */
+    .audience {
+      padding: var(--section-pad-y) var(--pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .audience-header {
+      width: 820px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .audience-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .audience-row {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    .audience-left {
+      width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .audience-label {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .audience-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .audience-desc {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--gray);
+    }
+
+    .audience-features {
+      flex: 1;
+      padding: 24px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+
+    .audience-features.accent {
+      border-color: var(--accent-025);
+    }
+
+    .audience-feats-text {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.9;
+      color: var(--white);
+      white-space: pre-line;
+    }
+
+    .audience-divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ===== Social Proof Section ===== */
+    .social-proof {
+      padding: var(--section-pad-y) var(--pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 24px;
+      justify-content: space-between;
+    }
+
+    .stat-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-num-large {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 52px;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .stat-num-large.accent {
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .sp-divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    .testimonial-row {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .quote-accent {
+      width: 2px;
+      height: 72px;
+      border-radius: 1px;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .quote-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .quote-text {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--white);
+    }
+
+    .quote-author {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* ===== Pricing Section ===== */
+    .pricing {
+      padding: var(--section-pad-y) var(--pad-x);
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .pricing-header {
+      width: 820px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .pricing-row {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .price-card {
+      flex: 1;
+      padding: 24px 32px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .price-card.recommended {
+      border-color: var(--accent-05);
+    }
+
+    .price-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .price-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 99px;
+      background: var(--accent);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 10px;
+      color: var(--bg);
+    }
+
+    .price-label {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .price-label.accent {
+      color: var(--accent);
+    }
+
+    .price-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .price-value {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 40px;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .price-value.accent {
+      color: var(--accent);
+    }
+
+    .price-unit {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .price-desc {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--gray);
+    }
+
+    .price-divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    .price-feats {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.9;
+      color: var(--white);
+      white-space: pre-line;
+    }
+
+    .price-cta {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .price-cta.outline {
+      border: 1px solid var(--border-2);
+      color: var(--white);
+    }
+
+    .price-cta.solid {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* ===== Final CTA Section ===== */
+    .final-cta {
+      padding: var(--section-pad-y) var(--pad-x);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .final-cta-card {
+      width: 960px;
+      padding: 64px;
+      border-radius: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-02);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 28px;
+      text-align: center;
+    }
+
+    .final-cta-label {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    .final-cta-headline {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--white);
+      white-space: pre-line;
+    }
+
+    .final-cta-sub {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--gray);
+    }
+
+    .final-cta-btn-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .final-cta-btn {
+      padding: 16px 32px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--bg);
+      font-size: 16px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font-sans);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .final-cta-trust {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      padding: 64px var(--pad-x) 32px;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-top {
+      display: flex;
+      gap: 48px;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .footer-logo-wrap {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    .footer-logo-ip {
+      font-size: 24px;
+      color: var(--white);
+    }
+
+    .footer-logo-x {
+      font-size: 26px;
+      color: var(--accent);
+    }
+
+    .footer-logo-ai {
+      font-size: 24px;
+      color: var(--white);
+    }
+
+    .footer-tagline {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--white);
+    }
+
+    .footer-desc {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .footer-links-row {
+      display: flex;
+      gap: 56px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .footer-col-title {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--dim);
+    }
+
+    .footer-col a {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--gray);
+      text-decoration: none;
+    }
+
+    .footer-col a:hover {
+      color: var(--white);
+    }
+
+    .footer-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    .footer-bottom {
+      display: flex;
+      gap: 24px;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0;
+    }
+
+    .footer-copyright {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--dim);
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .footer-legal a {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--dim);
+      text-decoration: none;
+    }
+
+    /* ============================================
    TABLET RESPONSIVE (≤ 1024px)
    Switch from canvas-scaling to natural layout
    ============================================ */
-@media (max-width: 1024px) {
-  :root {
-    --pad-x: 40px;
-    --section-pad-y: 64px;
-  }
+    @media (max-width: 1024px) {
+      :root {
+        --pad-x: 40px;
+        --section-pad-y: 64px;
+      }
 
-  /* Disable canvas scaling — use natural responsive layout */
-  .canvas-wrapper {
-    width: 100%;
-    transform: none !important;
-    margin: 0;
-  }
-  .canvas-outer {
-    height: auto !important;
-  }
+      /* Disable canvas scaling — use natural responsive layout */
+      .canvas-wrapper {
+        width: 100%;
+        transform: none !important;
+        margin: 0;
+      }
 
-  /* Header: shrink padding */
-  .header { height: 68px; }
+      .canvas-outer {
+        height: auto !important;
+      }
 
-  /* Hero: stack vertical */
-  .hero { padding: 48px var(--pad-x) 64px; gap: 40px; }
-  .hero-row { flex-direction: column; gap: 40px; align-items: stretch; }
-  .hero-left { width: 100%; gap: 24px; }
-  .hero-headline-1, .hero-headline-2 { font-size: 52px; }
-  .hero-sub { font-size: 16px; }
-  .hero-right { width: 100%; align-items: stretch; }
-  .workbench-card { width: 100%; max-width: 520px; margin: 0 auto; }
+      /* Header: shrink padding */
+      .header {
+        height: 68px;
+      }
 
-  /* Section headers full width */
-  .ps-header, .features-header, .audience-header, .pricing-header { width: 100%; }
-  .section-headline { font-size: 34px; }
+      /* Hero: stack vertical */
+      .hero {
+        padding: 48px var(--pad-x) 64px;
+        gap: 40px;
+      }
 
-  /* Bento: 2-col rows become single column on narrow tablet, keep 2-col on wide tablet */
-  .bento-tile { height: auto; min-height: 180px; }
+      .hero-row {
+        flex-direction: column;
+        gap: 40px;
+        align-items: stretch;
+      }
 
-  /* Audience: zig-zag still works on wide tablet, stack on narrow */
-  .audience-row { gap: 32px; }
-  .audience-left { width: 340px; }
+      .hero-left {
+        width: 100%;
+        gap: 24px;
+      }
 
-  /* Footer: tighten */
-  .footer-brand { width: 280px; }
-  .footer-links-row { gap: 32px; }
-}
+      .hero-headline-1,
+      .hero-headline-2 {
+        font-size: 52px;
+      }
 
-/* ============================================
+      .hero-sub {
+        font-size: 16px;
+      }
+
+      .hero-right {
+        width: 100%;
+        align-items: stretch;
+      }
+
+      .workbench-card {
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+      }
+
+      /* Section headers full width */
+      .ps-header,
+      .features-header,
+      .audience-header,
+      .pricing-header {
+        width: 100%;
+      }
+
+      .section-headline {
+        font-size: 34px;
+      }
+
+      /* Bento: 2-col rows become single column on narrow tablet, keep 2-col on wide tablet */
+      .bento-tile {
+        height: auto;
+        min-height: 180px;
+      }
+
+      /* Audience: zig-zag still works on wide tablet, stack on narrow */
+      .audience-row {
+        gap: 32px;
+      }
+
+      .audience-left {
+        width: 340px;
+      }
+
+      /* Footer: tighten */
+      .footer-brand {
+        width: 280px;
+      }
+
+      .footer-links-row {
+        gap: 32px;
+      }
+    }
+
+    /* ============================================
    TABLET NARROW (≤ 860px)
    ============================================ */
-@media (max-width: 860px) {
-  :root {
-    --pad-x: 32px;
-  }
+    @media (max-width: 860px) {
+      :root {
+        --pad-x: 32px;
+      }
 
-  /* Header: show hamburger, hide desktop nav */
-  .menu-toggle { display: flex; }
-  .nav { display: none; }
-  .header-cta { display: none; }
+      /* Header: show hamburger, hide desktop nav */
+      .menu-toggle {
+        display: flex;
+      }
 
-  /* Mobile nav panel */
-  .mobile-nav {
-    display: none;
-    position: fixed;
-    top: 68px;
-    left: 0;
-    right: 0;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 20px var(--pad-x) 28px;
-    flex-direction: column;
-    gap: 4px;
-    z-index: 99;
-    max-height: calc(100vh - 68px);
-    overflow-y: auto;
-  }
-  .mobile-nav.open { display: flex; }
-  .mobile-nav a {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--white);
-    text-decoration: none;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .mobile-nav a:last-of-type { border-bottom: none; }
-  .mobile-nav a::after {
-    content: '→';
-    color: var(--dim);
-    font-size: 16px;
-  }
-  .mobile-nav .mobile-nav-cta {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-    flex-direction: column;
-  }
-  .mobile-nav .btn-primary {
-    padding: 14px;
-    font-size: 15px;
-    width: 100%;
-  }
-  .mobile-nav .btn-secondary {
-    padding: 14px;
-    font-size: 15px;
-    width: 100%;
-  }
+      .nav {
+        display: none;
+      }
 
-  /* Hero: smaller headlines */
-  .hero-headline-1, .hero-headline-2 { font-size: 42px; }
-  .hero-sub { font-size: 15px; }
+      .header-cta {
+        display: none;
+      }
 
-  /* Problem/Solution: stack cards vertically, arrow points down */
-  .transform-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-  .transform-arrow {
-    transform: rotate(90deg);
-    font-size: 24px;
-    align-self: center;
-  }
+      /* Mobile nav panel */
+      .mobile-nav {
+        display: none;
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        padding: 20px var(--pad-x) 28px;
+        flex-direction: column;
+        gap: 4px;
+        z-index: 99;
+        max-height: calc(100vh - 68px);
+        overflow-y: auto;
+      }
 
-  /* Bento: single column */
-  .bento-row { flex-direction: column; }
-  .bento-tile.grow-7, .bento-tile.grow-5 { flex: 1; }
-  .bento-tile { height: auto; min-height: 160px; }
+      .mobile-nav.open {
+        display: flex;
+      }
 
-  /* Bento full tile: stack */
-  .bento-tile-full {
-    flex-direction: column;
-    align-items: stretch;
-    height: auto;
-    gap: 16px;
-  }
-  .bento-tile-full .tile-left { width: 100%; }
-  .bento-tile-full .tile-right { width: 100%; }
+      .mobile-nav a {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--white);
+        text-decoration: none;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-  /* Audience: single column, consistent order (label first) */
-  .audience-row {
-    flex-direction: column;
-    gap: 20px;
-  }
-  .audience-row.reverse .audience-features { order: 2; }
-  .audience-row.reverse .audience-left { order: 1; }
-  .audience-left { width: 100%; }
+      .mobile-nav a:last-of-type {
+        border-bottom: none;
+      }
 
-  /* Stats: 2x2 grid */
-  .stats-row {
-    flex-wrap: wrap;
-    gap: 32px 24px;
-  }
-  .stat-wrap { flex: 1 1 calc(50% - 12px); min-width: 140px; }
-  .stat-num-large { font-size: 42px; }
+      .mobile-nav a::after {
+        content: '→';
+        color: var(--dim);
+        font-size: 16px;
+      }
 
-  /* Pricing: stacked */
-  .pricing-row { flex-direction: column; }
-  .price-card { padding: 24px; }
+      .mobile-nav .mobile-nav-cta {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+        flex-direction: column;
+      }
 
-  /* Final CTA: full width */
-  .final-cta-card {
-    width: 100%;
-    padding: 40px 28px;
-  }
-  .final-cta-headline { font-size: 34px; }
-  .final-cta-sub { font-size: 15px; }
+      .mobile-nav .btn-primary {
+        padding: 14px;
+        font-size: 15px;
+        width: 100%;
+      }
 
-  /* Footer: stack */
-  .footer-top { flex-direction: column; gap: 32px; }
-  .footer-brand { width: 100%; }
-  .footer-links-row {
-    flex-wrap: wrap;
-    gap: 32px 40px;
-  }
-  .footer-col { min-width: 120px; }
-  .footer-bottom {
-    flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
-  }
-}
+      .mobile-nav .btn-secondary {
+        padding: 14px;
+        font-size: 15px;
+        width: 100%;
+      }
 
-/* ============================================
+      /* Hero: smaller headlines */
+      .hero-headline-1,
+      .hero-headline-2 {
+        font-size: 42px;
+      }
+
+      .hero-sub {
+        font-size: 15px;
+      }
+
+      /* Problem/Solution: stack cards vertically, arrow points down */
+      .transform-row {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .transform-arrow {
+        transform: rotate(90deg);
+        font-size: 24px;
+        align-self: center;
+      }
+
+      .transform-card {
+        align-self: center;
+      }
+
+      /* Bento: single column */
+      .bento-row {
+        flex-direction: column;
+      }
+
+      .bento-tile.grow-7,
+      .bento-tile.grow-5 {
+        flex: 1;
+      }
+
+      .bento-tile {
+        height: auto;
+        min-height: 160px;
+      }
+
+      /* Bento full tile: stack */
+      .bento-tile-full {
+        flex-direction: column;
+        align-items: stretch;
+        height: auto;
+        gap: 16px;
+      }
+
+      .bento-tile-full .tile-left {
+        width: 100%;
+      }
+
+      .bento-tile-full .tile-right {
+        width: 100%;
+      }
+
+      /* Audience: single column, consistent order (label first) */
+      .audience-row {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .audience-row.reverse .audience-features {
+        order: 2;
+      }
+
+      .audience-row.reverse .audience-left {
+        order: 1;
+      }
+
+      .audience-left {
+        width: 100%;
+        text-align: center;
+        align-items: center;
+      }
+
+      .audience-features {
+        align-self: center;
+      }
+
+      /* Stats: 2x2 grid */
+      .stats-row {
+        flex-wrap: wrap;
+        gap: 32px 24px;
+      }
+
+      .stat-wrap {
+        flex: 1 1 calc(50% - 12px);
+        min-width: 140px;
+      }
+
+      .stat-num-large {
+        font-size: 42px;
+      }
+
+      /* Pricing: stacked */
+      .pricing-row {
+        flex-direction: column;
+      }
+
+      .price-card {
+        padding: 24px;
+      }
+
+      .pricing-header {
+        text-align: center;
+        align-items: center;
+      }
+
+      .price-card {
+        align-self: center;
+      }
+
+      /* Final CTA: full width */
+      .final-cta-card {
+        width: 100%;
+        padding: 40px 28px;
+      }
+
+      .final-cta-headline {
+        font-size: 34px;
+      }
+
+      .final-cta-sub {
+        font-size: 15px;
+      }
+
+      /* Footer: stack */
+      .footer-top {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .footer-brand {
+        width: 100%;
+      }
+
+      .footer-links-row {
+        flex-wrap: wrap;
+        gap: 32px 40px;
+      }
+
+      .footer-col {
+        min-width: 120px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+    }
+
+    /* ============================================
    MOBILE (≤ 480px)
    ============================================ */
-@media (max-width: 480px) {
-  :root {
-    --pad-x: 20px;
-    --section-pad-y: 56px;
-  }
+    @media (max-width: 480px) {
+      :root {
+        --pad-x: 20px;
+        --section-pad-y: 56px;
+      }
 
-  /* Header */
-  .header { height: 60px; }
-  .logo-ip, .logo-ai { font-size: 19px; }
-  .logo-x { font-size: 20px; }
-  .menu-toggle { width: 40px; height: 40px; }
-  .mobile-nav { top: 60px; max-height: calc(100vh - 60px); }
+      /* Header */
+      .header {
+        height: 60px;
+      }
 
-  /* Hero */
-  .hero { padding: 40px var(--pad-x) 56px; gap: 32px; }
-  .hero-row { gap: 32px; }
-  .hero-left { gap: 20px; }
-  .hero-headline-1, .hero-headline-2 { font-size: 34px; line-height: 1.1; }
-  .hero-sub { font-size: 14px; line-height: 1.6; }
-  .hero-cta-row { flex-direction: column; gap: 12px; }
-  .hero-cta-row .btn-primary,
-  .hero-cta-row .btn-secondary {
-    width: 100%;
-    padding: 14px 20px;
-    font-size: 15px;
-  }
-  .hero-trust { font-size: 12px; line-height: 1.5; }
+      .logo-ip,
+      .logo-ai {
+        font-size: 19px;
+      }
 
-  /* Workbench card */
-  .workbench-card {
-    padding: 20px;
-    gap: 16px;
-    border-radius: 14px;
-  }
-  .wb-stat-num { font-size: 22px; }
-  .wb-stat-label { font-size: 10px; }
-  .wb-stat-row { gap: 8px; }
-  .wb-activity-text { font-size: 11px; }
-  .wb-command { padding: 10px 12px; }
-  .wb-command-text { font-size: 12px; }
+      .logo-x {
+        font-size: 20px;
+      }
 
-  /* Section headlines */
-  .section-headline { font-size: 26px; }
-  .section-desc { font-size: 14px; }
-  .section-label { font-size: 12px; }
+      .menu-toggle {
+        width: 40px;
+        height: 40px;
+      }
 
-  /* Problem/Solution */
-  .problem-solution { gap: 36px; }
-  .transform-card { padding: 20px; gap: 12px; }
-  .transform-title { font-size: 18px; }
-  .transform-points { font-size: 13px; line-height: 1.7; }
+      .mobile-nav {
+        top: 60px;
+        max-height: calc(100vh - 60px);
+      }
 
-  /* Features */
-  .features { gap: 36px; }
-  .bento-tile { padding: 20px; gap: 10px; min-height: 140px; }
-  .tile-title { font-size: 18px; }
-  .tile-desc { font-size: 13px; }
-  .bento-tile-full { padding: 20px; }
+      /* Hero */
+      .hero {
+        padding: 40px var(--pad-x) 56px;
+        gap: 32px;
+      }
 
-  /* Audience */
-  .audience { gap: 36px; }
-  .audience-list { gap: 28px; }
-  .audience-title { font-size: 22px; }
-  .audience-desc { font-size: 13px; }
-  .audience-features { padding: 20px; }
-  .audience-feats-text { font-size: 13px; line-height: 1.8; }
+      .hero-row {
+        gap: 32px;
+      }
 
-  /* Stats */
-  .social-proof { gap: 36px; }
-  .stats-row { gap: 28px 16px; }
-  .stat-wrap { flex: 1 1 calc(50% - 8px); min-width: 0; }
-  .stat-num-large { font-size: 32px; }
-  .stat-label { font-size: 11px; }
+      .hero-left {
+        gap: 20px;
+      }
 
-  /* Testimonial */
-  .quote-text { font-size: 16px; line-height: 1.6; }
-  .quote-author { font-size: 12px; }
-  .quote-accent { height: 60px; }
+      .hero-headline-1,
+      .hero-headline-2 {
+        font-size: 34px;
+        line-height: 1.1;
+      }
 
-  /* Pricing */
-  .pricing { gap: 36px; }
-  .price-card { padding: 20px; gap: 16px; }
-  .price-name { font-size: 18px; }
-  .price-value { font-size: 32px; }
-  .price-desc { font-size: 13px; }
-  .price-feats { font-size: 12px; line-height: 1.8; }
-  .price-cta { height: 44px; font-size: 14px; }
+      .hero-sub {
+        font-size: 14px;
+        line-height: 1.6;
+      }
 
-  /* Final CTA */
-  .final-cta-card {
-    padding: 36px 20px;
-    gap: 20px;
-    border-radius: 14px;
-  }
-  .final-cta-headline { font-size: 26px; }
-  .final-cta-sub { font-size: 14px; }
-  .final-cta-btn {
-    padding: 14px 24px;
-    font-size: 15px;
-    width: 100%;
-  }
-  .final-cta-trust { font-size: 12px; }
+      .hero-cta-row {
+        flex-direction: column;
+        gap: 12px;
+      }
 
-  /* Footer */
-  .footer { padding: 48px var(--pad-x) 24px; }
-  .footer-tagline { font-size: 14px; }
-  .footer-desc { font-size: 12px; }
-  .footer-links-row { gap: 28px 24px; }
-  .footer-col a { font-size: 13px; }
-  .footer-copyright { font-size: 12px; }
-  .footer-legal a { font-size: 12px; }
-  .footer-legal { gap: 16px; flex-wrap: wrap; }
-}
+      .hero-cta-row .btn-primary,
+      .hero-cta-row .btn-secondary {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 15px;
+      }
 
-/* ============================================
+      .hero-trust {
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      /* Workbench card */
+      .workbench-card {
+        padding: 20px;
+        gap: 16px;
+        border-radius: 14px;
+      }
+
+      .wb-stat-num {
+        font-size: 22px;
+      }
+
+      .wb-stat-label {
+        font-size: 10px;
+      }
+
+      .wb-stat-row {
+        gap: 8px;
+      }
+
+      .wb-activity-text {
+        font-size: 11px;
+      }
+
+      .wb-command {
+        padding: 10px 12px;
+      }
+
+      .wb-command-text {
+        font-size: 12px;
+      }
+
+      /* Section headlines */
+      .section-headline {
+        font-size: 26px;
+      }
+
+      .section-desc {
+        font-size: 14px;
+      }
+
+      .section-label {
+        font-size: 12px;
+      }
+
+      /* Problem/Solution */
+      .problem-solution {
+        gap: 36px;
+      }
+
+      .transform-card {
+        padding: 20px;
+        gap: 12px;
+      }
+
+      .transform-title {
+        font-size: 18px;
+      }
+
+      .transform-points {
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      /* Features */
+      .features {
+        gap: 36px;
+      }
+
+      .bento-tile {
+        padding: 20px;
+        gap: 10px;
+        min-height: 140px;
+      }
+
+      .tile-title {
+        font-size: 18px;
+      }
+
+      .tile-desc {
+        font-size: 13px;
+      }
+
+      .bento-tile-full {
+        padding: 20px;
+      }
+
+      /* Audience */
+      .audience {
+        gap: 36px;
+      }
+
+      .audience-list {
+        gap: 28px;
+      }
+
+      .audience-title {
+        font-size: 22px;
+      }
+
+      .audience-desc {
+        font-size: 13px;
+      }
+
+      .audience-features {
+        padding: 20px;
+      }
+
+      .audience-feats-text {
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
+      /* Stats */
+      .social-proof {
+        gap: 36px;
+      }
+
+      .stats-row {
+        gap: 28px 16px;
+      }
+
+      .stat-wrap {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 0;
+      }
+
+      .stat-num-large {
+        font-size: 32px;
+      }
+
+      .stat-label {
+        font-size: 11px;
+      }
+
+      /* Testimonial */
+      .quote-text {
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      .quote-author {
+        font-size: 12px;
+      }
+
+      .quote-accent {
+        height: 60px;
+      }
+
+      /* Pricing */
+      .pricing {
+        gap: 36px;
+      }
+
+      .price-card {
+        padding: 20px;
+        gap: 16px;
+      }
+
+      .price-name {
+        font-size: 18px;
+      }
+
+      .price-value {
+        font-size: 32px;
+      }
+
+      .price-desc {
+        font-size: 13px;
+      }
+
+      .price-feats {
+        font-size: 12px;
+        line-height: 1.8;
+      }
+
+      .price-cta {
+        height: 44px;
+        font-size: 14px;
+      }
+
+      /* Final CTA */
+      .final-cta-card {
+        padding: 36px 20px;
+        gap: 20px;
+        border-radius: 14px;
+      }
+
+      .final-cta-headline {
+        font-size: 26px;
+      }
+
+      .final-cta-sub {
+        font-size: 14px;
+      }
+
+      .final-cta-btn {
+        padding: 14px 24px;
+        font-size: 15px;
+        width: 100%;
+      }
+
+      .final-cta-trust {
+        font-size: 12px;
+      }
+
+      /* Footer */
+      .footer {
+        padding: 48px var(--pad-x) 24px;
+      }
+
+      .footer-tagline {
+        font-size: 14px;
+      }
+
+      .footer-desc {
+        font-size: 12px;
+      }
+
+      .footer-links-row {
+        gap: 28px 24px;
+      }
+
+      .footer-col a {
+        font-size: 13px;
+      }
+
+      .footer-copyright {
+        font-size: 12px;
+      }
+
+      .footer-legal a {
+        font-size: 12px;
+      }
+
+      .footer-legal {
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+    }
+
+    /* ============================================
    VERY SMALL (≤ 360px)
    ============================================ */
-@media (max-width: 360px) {
-  :root { --pad-x: 16px; }
-  .hero-headline-1, .hero-headline-2 { font-size: 30px; }
-  .section-headline { font-size: 24px; }
-  .stat-num-large { font-size: 28px; }
-}
+    @media (max-width: 360px) {
+      :root {
+        --pad-x: 16px;
+      }
 
-/* ===== Desktop-only: restore canvas scaling ===== */
-@media (min-width: 1025px) {
-  /* Canvas scaling handled by JS */
-}
-</style>
+      .hero-headline-1,
+      .hero-headline-2 {
+        font-size: 30px;
+      }
+
+      .section-headline {
+        font-size: 24px;
+      }
+
+      .stat-num-large {
+        font-size: 28px;
+      }
+    }
+
+    /* ===== Desktop-only: restore canvas scaling ===== */
+    @media (min-width: 1025px) {
+      /* Canvas scaling handled by JS */
+    }
+  </style>
 </head>
+
 <body>
-<div class="canvas-outer">
-<div class="canvas-wrapper">
+  <div class="canvas-outer">
+    <div class="canvas-wrapper">
 
-  <!-- ===== Header ===== -->
-  <header class="header">
-    <div class="logo">
-      <span class="logo-ip">IP</span><span class="logo-x">×</span><span class="logo-ai">AI</span>
-    </div>
-    <nav class="nav">
-      <a href="#">产品</a>
-      <a href="#">解决方案</a>
-      <a href="#">定价</a>
-      <a href="#">资源</a>
-    </nav>
-    <div class="header-cta">
-      <a href="#" class="login">登录</a>
-      <a href="#" class="btn-primary">免费开始</a>
-    </div>
-    <button class="menu-toggle" aria-label="菜单" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-  </header>
+      <!-- ===== Header ===== -->
+      <header class="header">
+        <div class="logo">
+          <span class="logo-ip">IP</span><span class="logo-x">×</span><span class="logo-ai">AI</span>
+        </div>
+        <nav class="nav">
+          <a href="#">产品</a>
+          <a href="#">解决方案</a>
+          <a href="#">定价</a>
+          <a href="#">资源</a>
+        </nav>
+        <div class="header-cta">
+          <a href="#" class="login">登录</a>
+          <a href="#" class="btn-primary">免费开始</a>
+        </div>
+        <button class="menu-toggle" aria-label="菜单" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </header>
 
-  <!-- ===== Mobile Nav Panel ===== -->
-  <div class="mobile-nav" id="mobileNav">
-    <a href="#">产品</a>
-    <a href="#">解决方案</a>
-    <a href="#">定价</a>
-    <a href="#">资源</a>
-    <div class="mobile-nav-cta">
-      <a href="#" class="btn-secondary">登录</a>
-      <a href="#" class="btn-primary">免费开始</a>
+      <!-- ===== Mobile Nav Panel ===== -->
+      <div class="mobile-nav" id="mobileNav">
+        <a href="#">产品</a>
+        <a href="#">解决方案</a>
+        <a href="#">定价</a>
+        <a href="#">资源</a>
+        <div class="mobile-nav-cta">
+          <a href="#" class="btn-secondary">登录</a>
+          <a href="#" class="btn-primary">免费开始</a>
+        </div>
+      </div>
+
+      <!-- ===== Hero Section ===== -->
+      <section class="hero">
+        <div class="hero-row">
+          <div class="hero-left">
+            <div class="badge">
+              <span class="badge-dot"></span>
+              <span>AI Agent 底座 · 次世代生产力平台</span>
+            </div>
+            <h1 class="hero-headline-1">让品牌、IP、流量，</h1>
+            <h1 class="hero-headline-2">进入次世代</h1>
+            <p class="hero-sub">从现在开始拥有一个企业级 AI Agent 底座——补齐身份、合规、资产、团队记忆、业务自动化能力，完成 AI 从「个人提效工具」到「组织级生产力平台」的升级。</p>
+            <div class="hero-cta-row">
+              <a href="#" class="btn-primary">免费开始构建</a>
+              <a href="#" class="btn-secondary">预约演示</a>
+            </div>
+            <p class="hero-trust">已服务 2,400+ 创作者品牌 · 180+ OPC 团队 · 60+ 企业组织</p>
+          </div>
+          <div class="hero-right">
+            <div class="workbench-card">
+              <div class="wb-header">
+                <span class="wb-title">Agent Workbench</span>
+                <div class="wb-status">
+                  <span class="badge-dot"></span>
+                  <span>运行中</span>
+                </div>
+              </div>
+              <div class="wb-divider"></div>
+              <div class="wb-stat-row">
+                <div class="wb-stat">
+                  <span class="wb-stat-num">12.6M</span>
+                  <span class="wb-stat-label">内容产出</span>
+                </div>
+                <div class="wb-stat">
+                  <span class="wb-stat-num">98.4%</span>
+                  <span class="wb-stat-label">合规通过率</span>
+                </div>
+                <div class="wb-stat">
+                  <span class="wb-stat-num">3.2K</span>
+                  <span class="wb-stat-label">自动化流程</span>
+                </div>
+              </div>
+              <span class="wb-activity-label">Agent 实时编排</span>
+              <div class="wb-activity-list">
+                <div class="wb-activity-item">
+                  <span class="wb-activity-dot"></span>
+                  <span class="wb-activity-text">身份核验 → 品牌资产入库</span>
+                </div>
+                <div class="wb-activity-item">
+                  <span class="wb-activity-dot"></span>
+                  <span class="wb-activity-text">合规扫描 → 内容自动发布</span>
+                </div>
+                <div class="wb-activity-item">
+                  <span class="wb-activity-dot dim"></span>
+                  <span class="wb-activity-text dim">团队记忆同步 → 话术更新</span>
+                </div>
+              </div>
+              <div class="wb-command">
+                <span class="wb-command-text">输入指令，或让 Agent 自主编排…</span>
+                <div class="wb-command-send">→</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Problem/Solution Section ===== -->
+      <section class="problem-solution">
+        <div class="ps-header">
+          <span class="section-label">为什么是 IPxAI</span>
+          <h2 class="section-headline">AI 不该只是你的提效工具，而是组织的底座。</h2>
+          <p class="section-desc">个人用 AI 提效，组织却用不起来。身份散落、合规缺位、资产无法沉淀、团队记忆断裂、流程靠人肉搬运——AI 停留在「个人玩具」，无法成为「组织底座」。IPxAI
+            补齐这五块拼图，让 AI 真正成为组织级生产力。</p>
+        </div>
+        <div class="transform-row">
+          <div class="transform-card">
+            <span class="transform-label">现在</span>
+            <h3 class="transform-title">个人提效工具</h3>
+            <p class="transform-points">· 身份散落各平台，无法溯源
+              · 合规缺位，内容随时踩线
+              · 资产无法沉淀，每次从零开始
+              · 团队记忆断裂，AI 不懂你的业务</p>
+          </div>
+          <span class="transform-arrow">→</span>
+          <div class="transform-card after">
+            <span class="transform-label accent">次世代</span>
+            <h3 class="transform-title white">组织级生产力平台</h3>
+            <p class="transform-points white">· 统一数字身份，跨平台可信
+              · 全链路合规护栏，自动预警
+              · 品牌/IP/流量资产沉淀复用
+              · 组织知识图谱，越用越懂你</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Core Features Section ===== -->
+      <section class="features">
+        <div class="features-header">
+          <span class="section-label">五大底座能力</span>
+          <h2 class="section-headline">补齐从个人到组织的五块拼图</h2>
+        </div>
+        <div class="bento-grid">
+          <div class="bento-row">
+            <div class="bento-tile grow-7">
+              <span class="tile-num">01</span>
+              <h3 class="tile-title">资产 Assets</h3>
+              <p class="tile-desc">品牌、IP、流量资产统一沉淀，可检索、可复用、可交易。让每一次创作都成为组织资产。</p>
+            </div>
+            <div class="bento-tile grow-5">
+              <span class="tile-num">02</span>
+              <h3 class="tile-title">身份 Identity</h3>
+              <p class="tile-desc">统一数字身份，跨平台可信溯源，让 Agent 以你的名义合规行动。</p>
+            </div>
+          </div>
+          <div class="bento-row">
+            <div class="bento-tile grow-5">
+              <span class="tile-num">03</span>
+              <h3 class="tile-title">合规 Compliance</h3>
+              <p class="tile-desc">内容、数据、业务全链路合规护栏，自动识别风险，实时预警。</p>
+            </div>
+            <div class="bento-tile grow-7">
+              <span class="tile-num">04</span>
+              <h3 class="tile-title">团队记忆 Memory</h3>
+              <p class="tile-desc">组织知识图谱自动沉淀，Agent 越用越懂你的业务、话术与决策偏好。</p>
+            </div>
+          </div>
+          <div class="bento-tile-full">
+            <div class="tile-left">
+              <span class="tile-num">05</span>
+              <h3 class="tile-title">业务自动化 Automation</h3>
+            </div>
+            <div class="tile-right">
+              <p class="tile-desc-large">Agent 编排引擎，从内容生产到客户运营，流程自驱运转。让重复性业务 7×24 不间断，人只做决策。</p>
+              <div class="tile-badge">
+                <span class="badge-dot"></span>
+                <span>7×24 不间断</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Audience Section ===== -->
+      <section class="audience">
+        <div class="audience-header">
+          <span class="section-label">为不同规模而设</span>
+          <h2 class="section-headline">从一个人，到一家公司，再到整个组织。</h2>
+          <p class="section-desc">同一套底座，三种部署深度。个人、OPC、企业都能找到属于自己的生产力入口。</p>
+        </div>
+        <div class="audience-list">
+          <div class="audience-row">
+            <div class="audience-left">
+              <span class="audience-label">01 · CREATOR</span>
+              <h3 class="audience-title">个人创作者</h3>
+              <p class="audience-desc">一人即公司。打造你的个人 IP 矩阵，让内容生产、流量运营、商业化全流程自动化。</p>
+            </div>
+            <div class="audience-features">
+              <p class="audience-feats-text">› 个人 IP 内容生产工作流
+                › 多平台一键分发与流量聚合
+                › 粉丝与数据资产沉淀
+                › 品牌合作与商业化匹配</p>
+            </div>
+          </div>
+          <div class="audience-divider"></div>
+          <div class="audience-row reverse">
+            <div class="audience-features">
+              <p class="audience-feats-text">› 客户全生命周期管理
+                › 销售与服务 Agent 编排
+                › 知识库与团队记忆自动沉淀
+                › 财务、合规、内容自动交付</p>
+            </div>
+            <div class="audience-left">
+              <span class="audience-label">02 · OPC</span>
+              <h3 class="audience-title">OPC 一人公司</h3>
+              <p class="audience-desc">一个人就是一家公司。从获客、交付到复购，让 Agent 替你跑完 90% 的运营流程。</p>
+            </div>
+          </div>
+          <div class="audience-divider"></div>
+          <div class="audience-row">
+            <div class="audience-left">
+              <span class="audience-label">03 · ENTERPRISE</span>
+              <h3 class="audience-title">企业组织</h3>
+              <p class="audience-desc">团队即网络。跨部门 Agent 协同，统一品牌资产治理与合规审计，让组织级 AI 真正落地。</p>
+            </div>
+            <div class="audience-features accent">
+              <p class="audience-feats-text">› 跨部门 Agent 协同与权限治理
+                › 品牌、IP、数据资产统一治理
+                › 全链路合规审计与风险预警
+                › 组织级知识图谱与决策支持</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Social Proof Section ===== -->
+      <section class="social-proof">
+        <span class="section-label">信任来自规模 · TRUSTED AT SCALE</span>
+        <div class="stats-row">
+          <div class="stat-wrap">
+            <span class="stat-num-large accent">2,400+</span>
+            <span class="stat-label">创作者品牌</span>
+          </div>
+          <div class="stat-wrap">
+            <span class="stat-num-large">180+</span>
+            <span class="stat-label">OPC 一人公司</span>
+          </div>
+          <div class="stat-wrap">
+            <span class="stat-num-large">60+</span>
+            <span class="stat-label">企业组织</span>
+          </div>
+          <div class="stat-wrap">
+            <span class="stat-num-large">12.6M+</span>
+            <span class="stat-label">月内容产出</span>
+          </div>
+        </div>
+        <div class="sp-divider"></div>
+        <div class="testimonial-row">
+          <div class="quote-accent"></div>
+          <div class="quote-content">
+            <p class="quote-text">过去要三个团队协作两周的事情，现在一个 Agent 编排当天交付。IPxAI 让我们的内容产能翻了 8 倍，同时合规零事故——它真正把 AI 从「工具」变成了「组织底座」。
+            </p>
+            <p class="quote-author">林知远 · 墨神工作室 主理人 / 前 4A 创意总监</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Pricing Section ===== -->
+      <section class="pricing">
+        <div class="pricing-header">
+          <span class="section-label">定价 · PRICING</span>
+          <h2 class="section-headline">一个底座，三种部署深度。</h2>
+          <p class="section-desc">从免费开始，按成长付费。所有方案均包含身份、合规、资产、记忆、自动化五大底座能力。</p>
+        </div>
+        <div class="pricing-row">
+          <!-- Starter -->
+          <div class="price-card">
+            <span class="price-label">STARTER · 创作者</span>
+            <h3 class="price-name">创作者</h3>
+            <div class="price-row">
+              <span class="price-value">¥0</span>
+              <span class="price-unit">/ 永久免费</span>
+            </div>
+            <p class="price-desc">个人创作者入门，核心功能全开。</p>
+            <div class="price-divider"></div>
+            <p class="price-feats">› 1 个 AI Agent
+              › 月产 100 条内容
+              › 基础身份与合规扫描
+              › 社区支持</p>
+            <a href="#" class="price-cta outline">免费开始</a>
+          </div>
+          <!-- Pro -->
+          <div class="price-card recommended">
+            <div class="price-badge-row">
+              <div class="price-badge">推荐</div>
+              <span class="price-label accent">PRO · OPC</span>
+            </div>
+            <h3 class="price-name">OPC 一人公司</h3>
+            <div class="price-row">
+              <span class="price-value accent">¥?99</span>
+              <span class="price-unit">/ 月</span>
+            </div>
+            <p class="price-desc">一人公司全栈运营，产能与合规双优。</p>
+            <div class="price-divider"></div>
+            <p class="price-feats">› 5 个 AI Agent + 团队记忆
+              › 月产 2,000 条内容
+              › 全链路合规护栏
+              › 资产沉淀与复用
+              › 优先邮件支持</p>
+            <a href="#" class="price-cta solid">开始 14 天试用</a>
+          </div>
+          <!-- Enterprise -->
+          <div class="price-card">
+            <span class="price-label">ENTERPRISE · 企业</span>
+            <h3 class="price-name">企业组织</h3>
+            <div class="price-row">
+              <span class="price-value">定制</span>
+              <span class="price-unit">/ 按需报价</span>
+            </div>
+            <p class="price-desc">大型组织级部署，安全、合规与定制。</p>
+            <div class="price-divider"></div>
+            <p class="price-feats">› 无限 Agent + 组织图谱
+              › SSO / 权限治理 / 审计
+              › 私有部署 / 数据隔离
+              › 专属客户成功经理
+              › SLA 保障</p>
+            <a href="#" class="price-cta outline">联系销售</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Final CTA Section ===== -->
+      <section class="final-cta">
+        <div class="final-cta-card">
+          <span class="final-cta-label">START NOW · 开始你的次世代</span>
+          <h2 class="final-cta-headline">现在开始，构建你的
+            组织级 AI 底座。</h2>
+          <p class="final-cta-sub">5 分钟搭建第一个 Agent。让品牌、IP、流量从「个人提效」跨入「组织级生产力」。</p>
+          <div class="final-cta-btn-row">
+            <a href="#" class="final-cta-btn">免费开始构建 →</a>
+          </div>
+          <p class="final-cta-trust">无需信用卡 · 5 分钟上手 · 随时降级或退出</p>
+        </div>
+      </section>
+
+      <!-- ===== Footer ===== -->
+      <footer class="footer">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <div class="footer-logo-wrap">
+              <span class="footer-logo-ip">IP</span><span class="footer-logo-x">×</span><span
+                class="footer-logo-ai">AI</span>
+            </div>
+            <p class="footer-tagline">AI Agent 底座 · 让品牌、IP、流量进入次世代。</p>
+            <p class="footer-desc">为个人、OPC、企业提供定制化生产力平台。从「个人提效工具」升级为「组织级生产力平台」。</p>
+          </div>
+          <div class="footer-links-row">
+            <div class="footer-col">
+              <span class="footer-col-title">产品</span>
+              <a href="#">Agent 底座</a>
+              <a href="#">团队记忆</a>
+              <a href="#">资产沉淀</a>
+            </div>
+            <div class="footer-col">
+              <span class="footer-col-title">解决方案</span>
+              <a href="#">个人创作者</a>
+              <a href="#">OPC 一人公司</a>
+              <a href="#">企业组织</a>
+            </div>
+            <div class="footer-col">
+              <span class="footer-col-title">资源</span>
+              <a href="#">文档中心</a>
+              <a href="#">API 参考</a>
+              <a href="#">客户案例</a>
+            </div>
+            <div class="footer-col">
+              <span class="footer-col-title">公司</span>
+              <a href="#">关于我们</a>
+              <a href="#">联系我们</a>
+              <a href="#">加入我们</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">
+          <span class="footer-copyright">© 2026 IPxAI. All rights reserved.</span>
+          <div class="footer-legal">
+            <a href="#">隐私政策</a>
+            <a href="#">服务条款</a>
+            <a href="#">Cookie 设置</a>
+          </div>
+        </div>
+      </footer>
+
     </div>
   </div>
 
-  <!-- ===== Hero Section ===== -->
-  <section class="hero">
-    <div class="hero-row">
-      <div class="hero-left">
-        <div class="badge">
-          <span class="badge-dot"></span>
-          <span>AI Agent 底座 · 次世代生产力平台</span>
-        </div>
-        <h1 class="hero-headline-1">让品牌、IP、流量，</h1>
-        <h1 class="hero-headline-2">进入次世代</h1>
-        <p class="hero-sub">从现在开始拥有一个企业级 AI Agent 底座——补齐身份、合规、资产、团队记忆、业务自动化能力，完成 AI 从「个人提效工具」到「组织级生产力平台」的升级。</p>
-        <div class="hero-cta-row">
-          <a href="#" class="btn-primary">免费开始构建</a>
-          <a href="#" class="btn-secondary">预约演示</a>
-        </div>
-        <p class="hero-trust">已服务 2,400+ 创作者品牌 · 180+ OPC 团队 · 60+ 企业组织</p>
-      </div>
-      <div class="hero-right">
-        <div class="workbench-card">
-          <div class="wb-header">
-            <span class="wb-title">Agent Workbench</span>
-            <div class="wb-status">
-              <span class="badge-dot"></span>
-              <span>运行中</span>
-            </div>
-          </div>
-          <div class="wb-divider"></div>
-          <div class="wb-stat-row">
-            <div class="wb-stat">
-              <span class="wb-stat-num">12.6M</span>
-              <span class="wb-stat-label">内容产出</span>
-            </div>
-            <div class="wb-stat">
-              <span class="wb-stat-num">98.4%</span>
-              <span class="wb-stat-label">合规通过率</span>
-            </div>
-            <div class="wb-stat">
-              <span class="wb-stat-num">3.2K</span>
-              <span class="wb-stat-label">自动化流程</span>
-            </div>
-          </div>
-          <span class="wb-activity-label">Agent 实时编排</span>
-          <div class="wb-activity-list">
-            <div class="wb-activity-item">
-              <span class="wb-activity-dot"></span>
-              <span class="wb-activity-text">身份核验 → 品牌资产入库</span>
-            </div>
-            <div class="wb-activity-item">
-              <span class="wb-activity-dot"></span>
-              <span class="wb-activity-text">合规扫描 → 内容自动发布</span>
-            </div>
-            <div class="wb-activity-item">
-              <span class="wb-activity-dot dim"></span>
-              <span class="wb-activity-text dim">团队记忆同步 → 话术更新</span>
-            </div>
-          </div>
-          <div class="wb-command">
-            <span class="wb-command-text">输入指令，或让 Agent 自主编排…</span>
-            <div class="wb-command-send">→</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <script>
+    // ===== Canvas Scaling: ONLY on desktop (≥ 1025px) =====
+    // On tablet/mobile, natural responsive CSS layout takes over.
+    function scaleCanvas() {
+      const wrapper = document.querySelector('.canvas-wrapper');
+      const outer = document.querySelector('.canvas-outer');
+      const vw = window.innerWidth;
 
-  <!-- ===== Problem/Solution Section ===== -->
-  <section class="problem-solution">
-    <div class="ps-header">
-      <span class="section-label">为什么是 IPxAI</span>
-      <h2 class="section-headline">AI 不该只是你的提效工具，而是组织的底座。</h2>
-      <p class="section-desc">个人用 AI 提效，组织却用不起来。身份散落、合规缺位、资产无法沉淀、团队记忆断裂、流程靠人肉搬运——AI 停留在「个人玩具」，无法成为「组织底座」。IPxAI 补齐这五块拼图，让 AI 真正成为组织级生产力。</p>
-    </div>
-    <div class="transform-row">
-      <div class="transform-card">
-        <span class="transform-label">现在</span>
-        <h3 class="transform-title">个人提效工具</h3>
-        <p class="transform-points">· 身份散落各平台，无法溯源
-· 合规缺位，内容随时踩线
-· 资产无法沉淀，每次从零开始
-· 团队记忆断裂，AI 不懂你的业务</p>
-      </div>
-      <span class="transform-arrow">→</span>
-      <div class="transform-card after">
-        <span class="transform-label accent">次世代</span>
-        <h3 class="transform-title white">组织级生产力平台</h3>
-        <p class="transform-points white">· 统一数字身份，跨平台可信
-· 全链路合规护栏，自动预警
-· 品牌/IP/流量资产沉淀复用
-· 组织知识图谱，越用越懂你</p>
-      </div>
-    </div>
-  </section>
+      // Only apply canvas scaling on desktop
+      if (vw < 1025) {
+        wrapper.style.transform = '';
+        wrapper.style.transformOrigin = '';
+        wrapper.style.marginLeft = '';
+        wrapper.style.marginRight = '';
+        outer.style.height = '';
+        return;
+      }
 
-  <!-- ===== Core Features Section ===== -->
-  <section class="features">
-    <div class="features-header">
-      <span class="section-label">五大底座能力</span>
-      <h2 class="section-headline">补齐从个人到组织的五块拼图</h2>
-    </div>
-    <div class="bento-grid">
-      <div class="bento-row">
-        <div class="bento-tile grow-7">
-          <span class="tile-num">01</span>
-          <h3 class="tile-title">资产 Assets</h3>
-          <p class="tile-desc">品牌、IP、流量资产统一沉淀，可检索、可复用、可交易。让每一次创作都成为组织资产。</p>
-        </div>
-        <div class="bento-tile grow-5">
-          <span class="tile-num">02</span>
-          <h3 class="tile-title">身份 Identity</h3>
-          <p class="tile-desc">统一数字身份，跨平台可信溯源，让 Agent 以你的名义合规行动。</p>
-        </div>
-      </div>
-      <div class="bento-row">
-        <div class="bento-tile grow-5">
-          <span class="tile-num">03</span>
-          <h3 class="tile-title">合规 Compliance</h3>
-          <p class="tile-desc">内容、数据、业务全链路合规护栏，自动识别风险，实时预警。</p>
-        </div>
-        <div class="bento-tile grow-7">
-          <span class="tile-num">04</span>
-          <h3 class="tile-title">团队记忆 Memory</h3>
-          <p class="tile-desc">组织知识图谱自动沉淀，Agent 越用越懂你的业务、话术与决策偏好。</p>
-        </div>
-      </div>
-      <div class="bento-tile-full">
-        <div class="tile-left">
-          <span class="tile-num">05</span>
-          <h3 class="tile-title">业务自动化 Automation</h3>
-        </div>
-        <div class="tile-right">
-          <p class="tile-desc-large">Agent 编排引擎，从内容生产到客户运营，流程自驱运转。让重复性业务 7×24 不间断，人只做决策。</p>
-          <div class="tile-badge">
-            <span class="badge-dot"></span>
-            <span>7×24 不间断</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+      const scale = Math.min(vw / 1440, 1);
+      wrapper.style.transform = 'scale(' + scale + ')';
+      wrapper.style.transformOrigin = scale < 1 ? 'top left' : 'top center';
 
-  <!-- ===== Audience Section ===== -->
-  <section class="audience">
-    <div class="audience-header">
-      <span class="section-label">为不同规模而设</span>
-      <h2 class="section-headline">从一个人，到一家公司，再到整个组织。</h2>
-      <p class="section-desc">同一套底座，三种部署深度。个人、OPC、企业都能找到属于自己的生产力入口。</p>
-    </div>
-    <div class="audience-list">
-      <div class="audience-row">
-        <div class="audience-left">
-          <span class="audience-label">01 · CREATOR</span>
-          <h3 class="audience-title">个人创作者</h3>
-          <p class="audience-desc">一人即公司。打造你的个人 IP 矩阵，让内容生产、流量运营、商业化全流程自动化。</p>
-        </div>
-        <div class="audience-features">
-          <p class="audience-feats-text">› 个人 IP 内容生产工作流
-› 多平台一键分发与流量聚合
-› 粉丝与数据资产沉淀
-› 品牌合作与商业化匹配</p>
-        </div>
-      </div>
-      <div class="audience-divider"></div>
-      <div class="audience-row reverse">
-        <div class="audience-features">
-          <p class="audience-feats-text">› 客户全生命周期管理
-› 销售与服务 Agent 编排
-› 知识库与团队记忆自动沉淀
-› 财务、合规、内容自动交付</p>
-        </div>
-        <div class="audience-left">
-          <span class="audience-label">02 · OPC</span>
-          <h3 class="audience-title">OPC 一人公司</h3>
-          <p class="audience-desc">一个人就是一家公司。从获客、交付到复购，让 Agent 替你跑完 90% 的运营流程。</p>
-        </div>
-      </div>
-      <div class="audience-divider"></div>
-      <div class="audience-row">
-        <div class="audience-left">
-          <span class="audience-label">03 · ENTERPRISE</span>
-          <h3 class="audience-title">企业组织</h3>
-          <p class="audience-desc">团队即网络。跨部门 Agent 协同，统一品牌资产治理与合规审计，让组织级 AI 真正落地。</p>
-        </div>
-        <div class="audience-features accent">
-          <p class="audience-feats-text">› 跨部门 Agent 协同与权限治理
-› 品牌、IP、数据资产统一治理
-› 全链路合规审计与风险预警
-› 组织级知识图谱与决策支持</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      // Adjust outer height to scaled wrapper height
+      const realHeight = wrapper.offsetHeight;
+      outer.style.height = (realHeight * scale) + 'px';
 
-  <!-- ===== Social Proof Section ===== -->
-  <section class="social-proof">
-    <span class="section-label">信任来自规模 · TRUSTED AT SCALE</span>
-    <div class="stats-row">
-      <div class="stat-wrap">
-        <span class="stat-num-large accent">2,400+</span>
-        <span class="stat-label">创作者品牌</span>
-      </div>
-      <div class="stat-wrap">
-        <span class="stat-num-large">180+</span>
-        <span class="stat-label">OPC 一人公司</span>
-      </div>
-      <div class="stat-wrap">
-        <span class="stat-num-large">60+</span>
-        <span class="stat-label">企业组织</span>
-      </div>
-      <div class="stat-wrap">
-        <span class="stat-num-large">12.6M+</span>
-        <span class="stat-label">月内容产出</span>
-      </div>
-    </div>
-    <div class="sp-divider"></div>
-    <div class="testimonial-row">
-      <div class="quote-accent"></div>
-      <div class="quote-content">
-        <p class="quote-text">过去要三个团队协作两周的事情，现在一个 Agent 编排当天交付。IPxAI 让我们的内容产能翻了 8 倍，同时合规零事故——它真正把 AI 从「工具」变成了「组织底座」。</p>
-        <p class="quote-author">林知远 · 墨见工作室 主理人 / 前 4A 创意总监</p>
-      </div>
-    </div>
-  </section>
+      // Center horizontally when viewport is wider than canvas
+      if (vw > 1440) {
+        wrapper.style.marginLeft = 'auto';
+        wrapper.style.marginRight = 'auto';
+      } else {
+        wrapper.style.marginLeft = '0';
+        wrapper.style.marginRight = '0';
+      }
+    }
 
-  <!-- ===== Pricing Section ===== -->
-  <section class="pricing">
-    <div class="pricing-header">
-      <span class="section-label">定价 · PRICING</span>
-      <h2 class="section-headline">一个底座，三种部署深度。</h2>
-      <p class="section-desc">从免费开始，按成长付费。所有方案均包含身份、合规、资产、记忆、自动化五大底座能力。</p>
-    </div>
-    <div class="pricing-row">
-      <!-- Starter -->
-      <div class="price-card">
-        <span class="price-label">STARTER · 创作者</span>
-        <h3 class="price-name">创作者</h3>
-        <div class="price-row">
-          <span class="price-value">¥0</span>
-          <span class="price-unit">/ 永久免费</span>
-        </div>
-        <p class="price-desc">个人创作者入门，核心功能全开。</p>
-        <div class="price-divider"></div>
-        <p class="price-feats">› 1 个 AI Agent
-› 月产 100 条内容
-› 基础身份与合规扫描
-› 社区支持</p>
-        <a href="#" class="price-cta outline">免费开始</a>
-      </div>
-      <!-- Pro -->
-      <div class="price-card recommended">
-        <div class="price-badge-row">
-          <div class="price-badge">推荐</div>
-          <span class="price-label accent">PRO · OPC</span>
-        </div>
-        <h3 class="price-name">OPC 一人公司</h3>
-        <div class="price-row">
-          <span class="price-value accent">¥299</span>
-          <span class="price-unit">/ 月</span>
-        </div>
-        <p class="price-desc">一人公司全栈运营，产能与合规双优。</p>
-        <div class="price-divider"></div>
-        <p class="price-feats">› 5 个 AI Agent + 团队记忆
-› 月产 2,000 条内容
-› 全链路合规护栏
-› 资产沉淀与复用
-› 优先邮件支持</p>
-        <a href="#" class="price-cta solid">开始 14 天试用</a>
-      </div>
-      <!-- Enterprise -->
-      <div class="price-card">
-        <span class="price-label">ENTERPRISE · 企业</span>
-        <h3 class="price-name">企业组织</h3>
-        <div class="price-row">
-          <span class="price-value">定制</span>
-          <span class="price-unit">/ 按需报价</span>
-        </div>
-        <p class="price-desc">大型组织级部署，安全、合规与定制。</p>
-        <div class="price-divider"></div>
-        <p class="price-feats">› 无限 Agent + 组织图谱
-› SSO / 权限治理 / 审计
-› 私有部署 / 数据隔离
-› 专属客户成功经理
-› SLA 保障</p>
-        <a href="#" class="price-cta outline">联系销售</a>
-      </div>
-    </div>
-  </section>
+    // ===== Mobile Menu Toggle =====
+    function setupMobileMenu() {
+      const toggle = document.querySelector('.menu-toggle');
+      const mobileNav = document.getElementById('mobileNav');
+      if (!toggle || !mobileNav) return;
 
-  <!-- ===== Final CTA Section ===== -->
-  <section class="final-cta">
-    <div class="final-cta-card">
-      <span class="final-cta-label">START NOW · 开始你的次世代</span>
-      <h2 class="final-cta-headline">现在开始，构建你的
-组织级 AI 底座。</h2>
-      <p class="final-cta-sub">5 分钟搭建第一个 Agent。让品牌、IP、流量从「个人提效」跨入「组织级生产力」。</p>
-      <div class="final-cta-btn-row">
-        <a href="#" class="final-cta-btn">免费开始构建 →</a>
-      </div>
-      <p class="final-cta-trust">无需信用卡 · 5 分钟上手 · 随时降级或退出</p>
-    </div>
-  </section>
+      const closeMenu = () => {
+        toggle.classList.remove('active');
+        mobileNav.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      };
 
-  <!-- ===== Footer ===== -->
-  <footer class="footer">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="footer-logo-wrap">
-          <span class="footer-logo-ip">IP</span><span class="footer-logo-x">×</span><span class="footer-logo-ai">AI</span>
-        </div>
-        <p class="footer-tagline">AI Agent 底座 · 让品牌、IP、流量进入次世代。</p>
-        <p class="footer-desc">为个人、OPC、企业提供定制化生产力平台。从「个人提效工具」升级为「组织级生产力平台」。</p>
-      </div>
-      <div class="footer-links-row">
-        <div class="footer-col">
-          <span class="footer-col-title">产品</span>
-          <a href="#">Agent 底座</a>
-          <a href="#">团队记忆</a>
-          <a href="#">资产沉淀</a>
-        </div>
-        <div class="footer-col">
-          <span class="footer-col-title">解决方案</span>
-          <a href="#">个人创作者</a>
-          <a href="#">OPC 一人公司</a>
-          <a href="#">企业组织</a>
-        </div>
-        <div class="footer-col">
-          <span class="footer-col-title">资源</span>
-          <a href="#">文档中心</a>
-          <a href="#">API 参考</a>
-          <a href="#">客户案例</a>
-        </div>
-        <div class="footer-col">
-          <span class="footer-col-title">公司</span>
-          <a href="#">关于我们</a>
-          <a href="#">联系我们</a>
-          <a href="#">加入我们</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-divider"></div>
-    <div class="footer-bottom">
-      <span class="footer-copyright">© 2026 IPxAI. All rights reserved.</span>
-      <div class="footer-legal">
-        <a href="#">隐私政策</a>
-        <a href="#">服务条款</a>
-        <a href="#">Cookie 设置</a>
-      </div>
-    </div>
-  </footer>
+      toggle.addEventListener('click', () => {
+        const isOpen = toggle.classList.toggle('active');
+        mobileNav.classList.toggle('open', isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        // Lock body scroll when menu open
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      });
 
-</div>
-</div>
+      // Close menu when a link is clicked
+      mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+      });
 
-<script>
-// ===== Canvas Scaling: ONLY on desktop (≥ 1025px) =====
-// On tablet/mobile, natural responsive CSS layout takes over.
-function scaleCanvas() {
-  const wrapper = document.querySelector('.canvas-wrapper');
-  const outer = document.querySelector('.canvas-outer');
-  const vw = window.innerWidth;
+      // Close menu on resize to desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 861) closeMenu();
+      });
 
-  // Only apply canvas scaling on desktop
-  if (vw < 1025) {
-    wrapper.style.transform = '';
-    wrapper.style.transformOrigin = '';
-    wrapper.style.marginLeft = '';
-    wrapper.style.marginRight = '';
-    outer.style.height = '';
-    return;
-  }
+      // Close menu on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeMenu();
+      });
+    }
 
-  const scale = Math.min(vw / 1440, 1);
-  wrapper.style.transform = 'scale(' + scale + ')';
-  wrapper.style.transformOrigin = scale < 1 ? 'top left' : 'top center';
-
-  // Adjust outer height to scaled wrapper height
-  const realHeight = wrapper.offsetHeight;
-  outer.style.height = (realHeight * scale) + 'px';
-
-  // Center horizontally when viewport is wider than canvas
-  if (vw > 1440) {
-    wrapper.style.marginLeft = 'auto';
-    wrapper.style.marginRight = 'auto';
-  } else {
-    wrapper.style.marginLeft = '0';
-    wrapper.style.marginRight = '0';
-  }
-}
-
-// ===== Mobile Menu Toggle =====
-function setupMobileMenu() {
-  const toggle = document.querySelector('.menu-toggle');
-  const mobileNav = document.getElementById('mobileNav');
-  if (!toggle || !mobileNav) return;
-
-  const closeMenu = () => {
-    toggle.classList.remove('active');
-    mobileNav.classList.remove('open');
-    toggle.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  };
-
-  toggle.addEventListener('click', () => {
-    const isOpen = toggle.classList.toggle('active');
-    mobileNav.classList.toggle('open', isOpen);
-    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    // Lock body scroll when menu open
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-  });
-
-  // Close menu when a link is clicked
-  mobileNav.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
-
-  // Close menu on resize to desktop
-  window.addEventListener('resize', () => {
-    if (window.innerWidth >= 861) closeMenu();
-  });
-
-  // Close menu on Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeMenu();
-  });
-}
-
-// ===== Init =====
-window.addEventListener('load', () => {
-  scaleCanvas();
-  setupMobileMenu();
-});
-window.addEventListener('resize', scaleCanvas);
-window.addEventListener('orientationchange', scaleCanvas);
-</script>
+    // ===== Init =====
+    window.addEventListener('load', () => {
+      scaleCanvas();
+      setupMobileMenu();
+    });
+    window.addEventListener('resize', scaleCanvas);
+    window.addEventListener('orientationchange', scaleCanvas);
+  </script>
 </body>
+
 </html>
